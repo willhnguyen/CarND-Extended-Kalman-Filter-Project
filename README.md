@@ -74,8 +74,6 @@ The first equation calculates the difference between the predicted state and the
 
 The R matrix represents the sensor noise. This matrix is a diagonal matrix that has uncertainty measurements provided by the manufacturer of the sensor.
 
-![RADAR y equation](https://latex.codecogs.com/gif.latex?y%20%3D%20z%20-%20h%28x%29%20%3D%20z%20-%20%5Cbegin%7Bbmatrix%7D%20%5Csqrt%7Bp_x%5E2&plus;p_y%5E2%7D%5C%5C%20%5Ctext%7Barctan%7D%28p_y/p_x%29%5C%5C%20%5Cfrac%7Bp_x%20v_x%20&plus;%20p_y%20v_y%7D%7B%5Csqrt%7Bp_x%5E2&plus;p_y%5E2%7D%7D%20%5Cend%7Bbmatrix%7D)
-
 The S and K matrices represent the covariance matrix  for y and the Kalman gain matrix. These are calculated to best predict the object's actual state.
 
 ### Extended Kalman Filter
@@ -95,6 +93,3 @@ The updated `src/FusionEKF.cpp` file includes variable initialization and code t
 The updated `src/kalman_filter.cpp` file has the entire Kalman filter and extended Kalman filter implemented. This includes the predictions step and the measurement update steps for both LiDAR and RADAR.
 
 The updated `src/tools.cpp` file includes a root mean square error calculator and a Jacobian matrix generator.
-
-
-
