@@ -1,47 +1,9 @@
-# Extended Kalman Filter Project Starter Code
+# Extended Kalman Filter Project
 Self-Driving Car Engineer Nanodegree Program
 
-In this project you will utilize a kalman filter to estimate the state of a moving object of interest with noisy lidar and radar measurements. Passing the project requires obtaining RMSE values that are lower that the tolerance outlined in the project rubric. 
+In this project, students are asked to implement the extended Kalman Filter to estimate the state of a moving object of interest with noisy lidar and radar measurements.
 
-This project involves the Term 2 Simulator which can be downloaded [here](https://github.com/udacity/self-driving-car-sim/releases)
-
-This repository includes two files that can be used to set up and install [uWebSocketIO](https://github.com/uWebSockets/uWebSockets) for either Linux or Mac systems. For windows you can use either Docker, VMware, or even [Windows 10 Bash on Ubuntu](https://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/) to install uWebSocketIO. Please see [this concept in the classroom](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/16cf4a78-4fc7-49e1-8621-3450ca938b77) for the required version and installation scripts.
-
-Once the install for uWebSocketIO is complete, the main program can be built and run by doing the following from the project top directory.
-
-1. mkdir build
-2. cd build
-3. cmake ..
-4. make
-5. ./ExtendedKF
-
-Tips for setting up your environment can be found [here](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/23d376c7-0195-4276-bdf0-e02f1f3c665d)
-
-Note that the programs that need to be written to accomplish the project are src/FusionEKF.cpp, src/FusionEKF.h, kalman_filter.cpp, kalman_filter.h, tools.cpp, and tools.h
-
-The program main.cpp has already been filled out, but feel free to modify it.
-
-Here is the main protcol that main.cpp uses for uWebSocketIO in communicating with the simulator.
-
-
-INPUT: values provided by the simulator to the c++ program
-
-["sensor_measurement"] => the measurement that the simulator observed (either lidar or radar)
-
-
-OUTPUT: values provided by the c++ program to the simulator
-
-["estimate_x"] <= kalman filter estimated position x
-["estimate_y"] <= kalman filter estimated position y
-["rmse_x"]
-["rmse_y"]
-["rmse_vx"]
-["rmse_vy"]
-
----
-
-## Other Important Dependencies
-
+## Dependencies
 * cmake >= 3.5
   * All OSes: [click here for installation instructions](https://cmake.org/install/)
 * make >= 4.1 (Linux, Mac), 3.81 (Windows)
@@ -53,77 +15,86 @@ OUTPUT: values provided by the c++ program to the simulator
   * Mac: same deal as make - [install Xcode command line tools](https://developer.apple.com/xcode/features/)
   * Windows: recommend using [MinGW](http://www.mingw.org/)
 
-## Basic Build Instructions
+## Build and Run Instructions
+To build the program, run the following sequence of command line instructions.
 
-1. Clone this repo.
-2. Make a build directory: `mkdir build && cd build`
-3. Compile: `cmake .. && make` 
-   * On windows, you may need to run: `cmake .. -G "Unix Makefiles" && make`
-4. Run it: `./ExtendedKF `
+```bash
+$ cd /path/to/cloned/repo
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+```
 
-## Editor Settings
+To see the program in action, make sure to download the [Term 2 simulator](https://github.com/udacity/self-driving-car-sim/releases), run it, and choose the first simulation option. Then, execute the program by executing the `ExtendedKF` program in the `build` folder.
 
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
+```bash
+$ ./ExtendedKF
+```
 
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
+## Project Information
+### Kalman Filter
+The Kalman filter is an algorithm that predicrts an object's movement by using sensor data. Because sensor data is noisy and has a degree of uncertainty, the Kalman filter is used to provide a more accurate prediction of the object's actual movement. It does so by looping through a prediction step and a measurement update step.
 
-## Code Style
+The Kalman filter keeps an updated state vector for the object which includes the object's cartesian position and velocity.
 
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
+![Kalman state vector](https://latex.codecogs.com/gif.latex?x%20%3D%20%5Cbegin%7Bbmatrix%7D%20p_x%5C%5C%20p_y%5C%5C%20v_x%5C%5C%20v_y%20%5Cend%7Bbmatrix%7D)
 
-## Generating Additional Data
+#### Prediction Step
+The prediction step predicts the object's position after some amount of time. It does so by using the current known state of the object.
 
-This is optional!
+![Prediction Step Equation](https://latex.codecogs.com/gif.latex?x_%7Bt&plus;1%7D%20%3D%20F%20%5Ccdot%20x_t%20%3D%20%5Cbegin%7Bbmatrix%7D%201%20%26%200%20%26%20%5CDelta%20t%20%26%200%20%5C%5C%200%20%26%201%20%26%200%20%26%20%5CDelta%20t%20%5C%5C%200%20%26%200%20%26%201%20%26%200%20%5C%5C%200%20%26%200%20%26%200%20%26%201%20%5Cend%7Bbmatrix%7D%5Cbegin%7Bbmatrix%7D%20p_x%5C%5C%20p_y%5C%5C%20v_x%5C%5C%20v_y%20%5Cend%7Bbmatrix%7D%20%3D%20%5Cbegin%7Bbmatrix%7D%20p_x%20&plus;%20v_x%5CDelta%20t%5C%5C%20p_y%20&plus;%20v_y%5CDelta%20t%5C%5C%20v_x%5C%5C%20v_y%20%5Cend%7Bbmatrix%7D)
 
-If you'd like to generate your own radar and lidar data, see the
-[utilities repo](https://github.com/udacity/CarND-Mercedes-SF-Utilities) for
-Matlab scripts that can generate additional data.
+The prediction step also updates the process noise which represents the noise of the system over time.
+ 
+![Process Noise Update Equation](https://latex.codecogs.com/gif.latex?P%20%3D%20F%20%5Ccdot%20P%20%5Ccdot%20F%5ET%20&plus;%20Q)
 
-## Project Instructions and Rubric
+[nu]: https://latex.codecogs.com/gif.latex?%5Cnu
 
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
+The Q term is derived from the state uncertainty term ![nu][nu]. For this README, the derivation of the ![nu][nu] and Q terms will not be included for brevity.
 
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project resources page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/382ebfd6-1d55-4487-84a5-b6a5a4ba1e47)
-for instructions and the project rubric.
+![Q Term](https://latex.codecogs.com/gif.latex?Q%20%3D%20%5Cbegin%7Bbmatrix%7D%20%5Cfrac%7B%5CDelta%20t%5E4%7D%7B4%7D%20%5Csigma_%7Bax%7D%5E2%20%26%200%20%26%20%5Cfrac%7B%5CDelta%20t%5E3%7D%7B2%7D%20%5Csigma_%7Bax%7D%5E2%20%26%200%5C%5C%200%20%26%20%5Cfrac%7B%5CDelta%20t%5E4%7D%7B4%7D%20%5Csigma_%7Bay%7D%5E2%20%26%200%20%26%20%5Cfrac%7B%5CDelta%20t%5E3%7D%7B2%7D%20%5Csigma_%7Bay%7D%5E2%5C%5C%20%5Cfrac%7B%5CDelta%20t%5E3%7D%7B2%7D%20%5Csigma_%7Bax%7D%5E2%20%26%200%20%26%20%5CDelta%20t%5E2%20%5Csigma_%7Bax%7D%5E2%20%26%200%5C%5C%200%20%26%20%5Cfrac%7B%5CDelta%20t%5E3%7D%7B2%7D%20%5Csigma_%7Bay%7D%5E2%20%26%200%20%26%20%5CDelta%20t%5E2%20%5Csigma_%7Bay%7D%5E2%20%5Cend%7Bbmatrix%7D)
 
-## Hints and Tips!
+#### Measurement Update Step
+Once the object's state has been predicted, it is necessary to validate the prediction with sensor data. There are 5 equations for the measurement update step.
 
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
-* Students have reported rapid expansion of log files when using the term 2 simulator.  This appears to be associated with not being connected to uWebSockets.  If this does occur,  please make sure you are conneted to uWebSockets. The following workaround may also be effective at preventing large log files.
+![y equation](https://latex.codecogs.com/gif.latex?y%20%3D%20z%20-%20H%20%5Ccdot%20x)
 
-    + create an empty log file
-    + remove write permissions so that the simulator can't write to log
- * Please note that the ```Eigen``` library does not initialize ```VectorXd``` or ```MatrixXd``` objects with zeros upon creation.
+![S equation](https://latex.codecogs.com/gif.latex?S%20%3D%20H%20%5Ccdot%20P%20%5Ccdot%20H%5ET%20&plus;%20R)
 
-## Call for IDE Profiles Pull Requests
+![K equation](https://latex.codecogs.com/gif.latex?K%20%3D%20P%20%5Ccdot%20H%5ET%20%5Ccdot%20S%5E%7B-1%7D)
 
-Help your fellow students!
+![x equation](https://latex.codecogs.com/gif.latex?x%27%3D%20x%20&plus;%20K%20%5Ccdot%20y)
 
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
+![P equation](https://latex.codecogs.com/gif.latex?P%27%20%3D%20%28I%20-%20K%20%5Ccdot%20H%29%20%5Ccdot%20P)
 
-However! We'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
+The first equation calculates the difference between the predicted state and the measured state. The H vector is required to convert the state vector x into the same state space of the sensor's measurement data. For LiDAR, the H data is provided below. Read the Extended Kalman filter section for RADAR.
 
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
+![H matrix](https://latex.codecogs.com/gif.latex?H%20%3D%20%5Cbegin%7Bbmatrix%7D%201%20%26%200%20%26%200%20%26%200%5C%5C%200%20%26%201%20%26%200%20%26%200%20%5Cend%7Bbmatrix%7D)
 
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
+The R matrix represents the sensor noise. This matrix is a diagonal matrix that has uncertainty measurements provided by the manufacturer of the sensor.
 
-Regardless of the IDE used, every submitted project must
-still be compilable with cmake and make.
+![RADAR y equation](https://latex.codecogs.com/gif.latex?y%20%3D%20z%20-%20h%28x%29%20%3D%20z%20-%20%5Cbegin%7Bbmatrix%7D%20%5Csqrt%7Bp_x%5E2&plus;p_y%5E2%7D%5C%5C%20%5Ctext%7Barctan%7D%28p_y/p_x%29%5C%5C%20%5Cfrac%7Bp_x%20v_x%20&plus;%20p_y%20v_y%7D%7B%5Csqrt%7Bp_x%5E2&plus;p_y%5E2%7D%7D%20%5Cend%7Bbmatrix%7D)
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+The S and K matrices represent the covariance matrix  for y and the Kalman gain matrix. These are calculated to best predict the object's actual state.
+
+### Extended Kalman Filter
+The extended Kalman filter is an extension of the Kalman filter that allows for non-linearity. This non-linearity occurs when using RADAR since the y equation in the measurement update step has to use square roots and trigonometric functions to convert the cartesian state space to RADAR's polar state space.
+
+![RADAR y equation](https://latex.codecogs.com/gif.latex?y%20%3D%20z%20-%20h%28x%29%20%3D%20z%20-%20%5Cbegin%7Bbmatrix%7D%20%5Csqrt%7Bp_x%5E2&plus;p_y%5E2%7D%5C%5C%20%5Ctext%7Barctan%7D%28p_y/p_x%29%5C%5C%20%5Cfrac%7Bp_x%20v_x%20&plus;%20p_y%20v_y%7D%7B%5Csqrt%7Bp_x%5E2&plus;p_y%5E2%7D%7D%20%5Cend%7Bbmatrix%7D)
+
+As a result, RADAR has no equivalent H matrix to calculate the S and K matrices. To accomodate for this non-linearity, a Jacobian matrix (the first term of a multidimensional Taylor expansion) can be used to approximate an equivalent H matrix. Again, for this README, the Jacobian matrix derivation will not be included for brevity.
+
+![Radar Jacobian Matrix](https://latex.codecogs.com/gif.latex?H_j%20%3D%20%5Cbegin%7Bbmatrix%7D%20%5Cfrac%7Bp_x%7D%7B%5Csqrt%7Bp_x%5E2&plus;p_y%5E2%7D%7D%20%26%20%5Cfrac%7Bp_y%7D%7B%5Csqrt%7Bp_x%5E2&plus;p_y%5E2%7D%7D%20%26%200%20%26%200%5C%5C%20-%5Cfrac%7Bp_y%7D%7Bp_x%5E2&plus;p_y%5E2%7D%20%26%20%5Cfrac%7Bp_x%7D%7Bp_x%5E2&plus;p_y%5E2%7D%20%26%200%20%26%200%5C%5C%20%5Cfrac%7Bp_y%28v_x%20p_y%20-%20v_y%20p_x%29%7D%7B%28p_x%5E2&plus;p_y%5E2%29%5E%7B3/2%7D%7D%20%26%20%5Cfrac%7Bp_x%28v_y%20p_x%20-%20v_x%20p_y%29%7D%7B%28p_x%5E2&plus;p_y%5E2%29%5E%7B3/2%7D%7D%20%26%20%5Cfrac%7Bp_x%7D%7B%5Csqrt%7Bp_x%5E2&plus;p_y%5E2%7D%7D%20%26%20%5Cfrac%7Bp_y%7D%7B%5Csqrt%7Bp_x%5E2&plus;p_y%5E2%7D%7D%20%5Cend%7Bbmatrix%7D)
+
+## Project Implemenation Details
+Following the provided starter code, the `src/FusionEKF.cpp`, `src/kalman_filter.cpp`, and `src/tools.cpp` files were modified as necessary. For this project, `src/kalman_filter.h` was also modified to add an extra class method to avoid repeating the measurement update calculations that were the same for both RADAR and LiDAR.
+
+The updated `src/FusionEKF.cpp` file includes variable initialization and code that controls how RADAR and LiDAR data are processed.
+
+The updated `src/kalman_filter.cpp` file has the entire Kalman filter and extended Kalman filter implemented. This includes the predictions step and the measurement update steps for both LiDAR and RADAR.
+
+The updated `src/tools.cpp` file includes a root mean square error calculator and a Jacobian matrix generator.
+
+
 
